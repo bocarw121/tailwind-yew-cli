@@ -1,0 +1,19 @@
+[package]
+name = "tailwind-yew"
+version = "0.1.1"
+edition = "2021"
+license = "MIT"
+authors = ["Bocar Wane < "]
+description = "Sets up tailwind css in your existing yew project"
+repository = "https://github.com/bocarw121/tailwind-yew-cli.git"
+categories = ["command-line-utilities", "Web programming"]
+keywords = ["tailwind", "yew", "cli", "css", "wasm"]
+homepage = "https://github.com/bocarw121/tailwind-yew-cli.git"
+
+
+[dependencies]
+clap = { version = "4.0.29", features = ["derive"] }
+glob = "0.3.0"
+rust-embed = "6.4.2"
+inquire = "0.5.2"
+colored = "2.0.0"
