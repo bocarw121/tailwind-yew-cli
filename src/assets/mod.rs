@@ -1,4 +1,4 @@
-use crate::file_utils::write_to_file;
+use crate::utils::files::write_to_file;
 use glob::glob;
 
 use rust_embed::RustEmbed;
