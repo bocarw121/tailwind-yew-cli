@@ -12,7 +12,7 @@ If not, an HTML file has already been created for you with the proper link.
 
 ```html
 <head>
-  <link data-trunk rel="css" href="/styles/output.css"/>
+  <link data-trunk rel="css" href="/@output"/>
 </head>
 ```
 
