@@ -1,18 +1,26 @@
-use std::{fs, os::unix::prelude::PermissionsExt, path::Path, process::Command};
+use std::{fs, os::unix::prelude::PermissionsExt, path::Path};
 
 use colored::Colorize;
 
 use crate::{
     assets::Asset,
     build::get_build_script,
-    file_utils::{create_dir_and_file, create_file},
+    utils::{
+        commands::my_commands,
+        files::{create_dir_and_file, create_file},
+    },
 };
 
+const INFO_MD: &str = "tailwind_info.md";
+const CONFIG_JS: &str = "./tailwind.config.js";
+const INDEX_HTML: &str = "index.html";
+const TAILWIND_CSS: &str = "tailwindcss";
+
 pub fn yew_setup(path: &str, input_name: &str, output_name: &str) {
-    create_file("./tailwind.config.js");
+    create_file(CONFIG_JS);
 
     // Update tailwind config with sample
-    Asset::locate_target_and_write_assets("./tailwind.config.js", "yew.js");
+    Asset::locate_target_and_write_assets(CONFIG_JS, "config.js");
 
     let (selected_os, build_executable) = get_build_script();
 
@@ -40,18 +48,19 @@ pub fn yew_setup(path: &str, input_name: &str, output_name: &str) {
     println!("{}", success_message)
 }
 
-fn replace_placeholders(symbol: &str, path: &str, file_path: &str) {
+fn replace_placeholders(symbol: &str, replacement_content: &str, file_path: &str) {
     let content = Asset::handle_sample(file_path);
-    let replaced = content.replace(symbol, path);
+    let replaced = content.replace(symbol, replacement_content);
     fs::write(file_path, replaced).unwrap();
 }
 
 fn create_read_me(input_path: &str, output_path: &str) {
-    let script = format!("./tailwindcss -i {} -o {}", &input_path, &output_path);
+    let script = format!("./{} -i {} -o {}", TAILWIND_CSS, &input_path, &output_path);
 
-    create_file("tailwind_info.md");
+    create_file(INFO_MD);
 
-    replace_placeholders("@path", &script, "tailwind_info.md");
+    replace_placeholders("@path", &script, INFO_MD);
+    replace_placeholders("@output", &output_path, INFO_MD);
 }
 
 fn curl_down_tailwind_build(selected_os: &str) {
@@ -62,12 +71,7 @@ fn curl_down_tailwind_build(selected_os: &str) {
 
     let args = ["-sLO", &command_url];
 
-    Command::new("curl")
-        .args(args)
-        .spawn()
-        .unwrap()
-        .wait()
-        .unwrap();
+    my_commands("curl", &args);
 }
 
 fn set_permissions_and_rename_executable(build_executable: &str) {
@@ -77,22 +81,16 @@ fn set_permissions_and_rename_executable(build_executable: &str) {
     )
     .unwrap();
 
-    Command::new("mv")
-        .arg(build_executable)
-        .arg("tailwindcss")
-        .spawn()
-        .unwrap()
-        .wait()
-        .unwrap();
+    my_commands("mv", &[build_executable, TAILWIND_CSS]);
 }
 
 fn setup_index_html(output_path: &str) {
-    let is_html_present = Path::new("index.html").is_file();
+    let is_html_present = Path::new(INDEX_HTML).is_file();
 
     if !is_html_present {
-        create_file("index.html");
+        create_file(INDEX_HTML);
     }
-    Asset::locate_target_and_write_assets("./index.html", "index.html");
+    Asset::locate_target_and_write_assets(INDEX_HTML, INDEX_HTML);
 
-    replace_placeholders("@output", output_path, "index.html");
+    replace_placeholders("@output", output_path, INDEX_HTML);
 }

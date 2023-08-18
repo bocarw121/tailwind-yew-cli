@@ -2,7 +2,7 @@ pub mod assets;
 pub mod cli;
 
 pub mod build;
-pub mod file_utils;
+mod utils;
 pub mod yew;
 
 use clap::Parser;
