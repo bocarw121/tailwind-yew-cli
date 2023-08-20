@@ -30,18 +30,15 @@ Once the command is executed, you'll be prompted to choose the executable for yo
 
 The CLI will then take care of setting up everything necessary to integrate Tailwind CSS seamlessly into your Yew project. This includes building the Tailwind executable, creating the style directory, and adding the necessary HTML link. Your project will be ready to utilize Tailwind CSS. 
 
-For ongoing development, run the generated executable with the watch flag to maintain the smooth development workflow.
-
-
 For ongoing development, run the generated executable with the watch flag to maintain the smooth development workflow:
 
 ```sh
-./tailwindcss -w
+./tailwindcss -i styles/input.css -o styles/output.css # or replaces with your input and output directory if you need not pick the defaults
 ```
 
 This will enable you to observe real-time changes and ensure that your Yew project's styling remains consistent and up-to-date with the power of Tailwind CSS.
 
-Take a look at the created `tailwind_info.md` for more information! Now go make something really cool 💪!
+Take a look at the created `tailwind_info.md` for more information as it dynamically generates the paths your selected Now go make something really cool 💪!
 
 ```sh
 Options:

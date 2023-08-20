@@ -33,3 +33,40 @@ pub fn create_dir_and_file(dir_path: &str, file_path: &str) {
         }
     };
 }
+
+pub fn find_and_replace_file(target_file: &str, from: &str, to: &str) {
+    // Package.json
+
+    let is_real_target = is_real_file_or_dir(target_file);
+
+    if !is_real_target {
+        return;
+    }
+
+    let file = match fs::read_to_string(target_file) {
+        Ok(file) => file,
+        Err(_) => {
+            eprintln!("{target_file} not found in the root");
+            // Maybe show a message with scripts to add
+            return;
+        }
+    };
+
+    let content = file.replace(from, to);
+
+    match fs::write(target_file, content) {
+        Ok(_) => {
+            // println!("File has been replaced successfully")
+        }
+        Err(_) => {
+            eprintln!("Something went wrong, please try again");
+        }
+    };
+}
+
+pub fn is_real_file_or_dir(path: &str) -> bool {
+    match fs::metadata(path) {
+        Ok(_) => true,
+        Err(_) => false,
+    }
+}
