@@ -7,7 +7,7 @@ use crate::{
     build::get_build_script,
     utils::{
         commands::my_commands,
-        files::{create_dir_and_file, create_file, find_and_replace_file},
+        files::{create_dir_and_file, create_file, does_file_contain_item, find_and_replace_file},
     },
 };
 
@@ -56,7 +56,7 @@ fn create_read_me(input_path: &str, output_path: &str) {
     Asset::locate_target_and_write_assets(INFO_MD, INFO_MD);
 
     find_and_replace_file(INFO_MD, "@path", &script);
-    find_and_replace_file(INFO_MD, "@output", &output_path);
+    find_and_replace_file(INFO_MD, "@output", output_path);
 }
 
 fn curl_down_tailwind_build(selected_os: &str) {
@@ -85,8 +85,45 @@ fn setup_index_html(output_path: &str) {
 
     if !is_html_present {
         create_file(INDEX_HTML);
-    }
-    Asset::locate_target_and_write_assets(INDEX_HTML, INDEX_HTML);
+        Asset::locate_target_and_write_assets(INDEX_HTML, INDEX_HTML);
 
-    find_and_replace_file(INDEX_HTML, "@output", output_path);
+        find_and_replace_file(INDEX_HTML, "@output", output_path);
+        return;
+    }
+
+    let link = format!("<link data-trunk rel=\"css\" href=\"{}\">", output_path);
+
+    let is_link_present = does_file_contain_item(INDEX_HTML, &link);
+
+    if is_link_present {
+        let message = format!("{} already exists in index.html", link).yellow();
+        println!("{}", message);
+        return;
+    }
+
+    let is_title_present = does_file_contain_item(INDEX_HTML, "<title>");
+
+    if is_title_present {
+        find_and_replace_file(INDEX_HTML, "</title>", &format!("</title>\n\t\t{}", link));
+
+        return;
+    }
+
+    let is_meta_charset = does_file_contain_item(INDEX_HTML, "<meta charset=\"utf-8\" />");
+
+    if is_meta_charset {
+        find_and_replace_file(
+            INDEX_HTML,
+            "<meta charset=\"utf-8\" />",
+            &format!("<meta charset=\"utf-8\" />\n\t\t{}", link),
+        );
+
+        return;
+    }
+
+    let is_head = does_file_contain_item(INDEX_HTML, "<head>");
+
+    if is_head {
+        find_and_replace_file(INDEX_HTML, "<head>", &format!("<head>\n\t\t{}", link))
+    }
 }

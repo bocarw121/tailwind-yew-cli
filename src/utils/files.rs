@@ -1,4 +1,8 @@
-use std::{fs, path::PathBuf};
+use std::{
+    fs::{self, File},
+    io::{BufRead, BufReader},
+    path::PathBuf,
+};
 
 pub fn write_to_file(path: PathBuf, content: String) {
     fs::write(path, content).unwrap_or_else(|_| {
@@ -65,8 +69,38 @@ pub fn find_and_replace_file(target_file: &str, from: &str, to: &str) {
 }
 
 pub fn is_real_file_or_dir(path: &str) -> bool {
-    match fs::metadata(path) {
-        Ok(_) => true,
-        Err(_) => false,
+    fs::metadata(path).is_ok()
+}
+
+/// Checks if a given file contains a specific item (string).
+///
+/// # Arguments
+///
+/// * `file_path` - A string slice that holds the path to the file.
+/// * `item` - The string item to search for in the file.
+///
+/// # Returns
+///
+/// * `bool` - Returns `true` if the item is found in the file, otherwise `false`.
+pub fn does_file_contain_item(file_path: &str, item: &str) -> bool {
+    let file = match File::open(file_path) {
+        Ok(file) => file,
+        Err(_) => {
+            println!("Could not open file: {}", file_path);
+            return false;
+        }
+    };
+    let reader = BufReader::new(file);
+
+    let mut contains_package_name = false;
+
+    for line in reader.lines() {
+        let line = line.unwrap();
+        if line.contains(item) {
+            contains_package_name = true;
+            break;
+        }
     }
+
+    contains_package_name
 }
