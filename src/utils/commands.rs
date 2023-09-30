@@ -7,10 +7,12 @@ pub fn my_commands(program: &str, inputs: &[&str]) {
         command.arg(input);
     }
 
-    let mut child_process = command.spawn().expect(&format!(
-        "Failed to start the process. The executable '{}' may not exist or is not accessible.",
-        program
-    ));
+    let mut child_process = command.spawn().unwrap_or_else(|_| {
+        panic!(
+            "Failed to start the process. The executable '{}' may not exist or is not accessible.",
+            program
+        )
+    });
 
     let status: ExitStatus = child_process
         .wait()

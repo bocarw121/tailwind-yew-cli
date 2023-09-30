@@ -6,7 +6,7 @@
 ## Compile and minify your CSS for production
 `@path --minify`
 
-If you already had an HTML file before the tailwind build, make sure to add the link to the output css file. 
+If you already had an HTML file before the tailwind build, the link to the css file has been added for you. 
 
 If not, an HTML file has already been created for you with the proper link.
 
