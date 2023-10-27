@@ -14,7 +14,7 @@ pub fn get_build_script() -> (String, String) {
 
     let selected_os = Select::new("What is your os version", os_versions)
         .prompt()
-        .unwrap();
+        .unwrap_or_else(|_| std::process::exit(1));
 
     let build_executable = format!("tailwindcss-{}", selected_os);
 

@@ -1,4 +1,6 @@
-use std::{fs, os::unix::prelude::PermissionsExt, path::Path};
+#[cfg(unix)]
+use std::os::unix::prelude::PermissionsExt;
+use std::{fs, path::Path};
 
 use colored::Colorize;
 
@@ -71,13 +73,22 @@ fn curl_down_tailwind_build(selected_os: &str) {
 }
 
 fn set_permissions_and_rename_executable(build_executable: &str) {
-    fs::set_permissions(
-        format!("./{build_executable}"),
-        fs::Permissions::from_mode(0o755),
-    )
-    .unwrap();
+    if cfg!(unix) {
+        #[cfg(unix)]
+        {
+            match fs::set_permissions(
+                format!("./{build_executable}"),
+                fs::Permissions::from_mode(0o755),
+            ) {
+                Ok(_) => (),
+                Err(e) => println!("Something went wrong setting permissions: {}", e),
+            }
 
-    my_commands("mv", &[build_executable, TAILWIND_CSS]);
+            my_commands("mv", &[build_executable, TAILWIND_CSS]);
+        }
+    } else {
+        fs::rename(build_executable, TAILWIND_CSS).unwrap();
+    }
 }
 
 fn setup_index_html(output_path: &str) {
