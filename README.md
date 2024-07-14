@@ -38,8 +38,7 @@ For ongoing development, run the generated executable with the watch flag to mai
 
 This will enable you to observe real-time changes and ensure that your Yew project's styling remains consistent and up-to-date with the power of Tailwind CSS.
 
-Take a look at the created `tailwind_info.md` for more information as it dynamically generates the paths your selected Now go make something really cool 💪!
-
+Take a look at the created `tailwind_info.md` for more information, as it dynamically generates the paths you previously selected. That's it, you're all set. Now go make something really cool 💪!
 ```sh
 Options:
   -p, --path <PATH>                Optional - Path for the tailwind input and output css files [default: styles]
@@ -47,4 +46,3 @@ Options:
   -o, --output-name <OUTPUT_NAME>  Optional - Output css name You must add the extension ie. [my_output.css] - [default: output.css]
   -h, --help                       Print help information                    Print help information
 ```
-
